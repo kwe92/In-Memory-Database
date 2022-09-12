@@ -72,7 +72,6 @@ class InMemDB():
         ----------     
         table_name: The table name of the table you want to drop. If the table name does not exists
             within the database an error is raised.
-    
         '''
         
         if self._conn.has_table(table_name)==False:
