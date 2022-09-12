@@ -10,7 +10,7 @@ class InMemDB():
     def __init__(self):
         self._conn = create_engine('sqlite://')
         
-    def CreateTableDF(self, table_name:'str', df:'pandas.DataFrame',index=False)->None:
+    def CreateTableDF(self, table_name:'str', df:pd.DataFrame,index=False)->None:
         '''
         Creates a new table in the current database from a pandas.DataFrame object.
         
@@ -33,7 +33,7 @@ class InMemDB():
             raise AttributeError('the df parameter must be a pandas.DataFrame object.')
 
     
-    def CreateTableSeq(self, table_name:'str', seq:'dict or array like object', columns=None, index=None)->None:
+    def CreateTableSeq(self, table_name:str, seq, columns=None, index=None)->None:
         
         '''
         Creates a new table in the current database from a dict or array like object.
@@ -83,7 +83,7 @@ class InMemDB():
             pass
         return f'{table_name} has been deleted'
     
-    def query(self, query:'str')->'pandas.DataFrame':
+    def query(self, query:'str')->pd.DataFrame:
         '''
         Queries the current database.
         Returns a pandas.DataFrame Object.
