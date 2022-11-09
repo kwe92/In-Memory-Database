@@ -1,6 +1,14 @@
-# In-Memory-Database
+# InMemoryDatabase: powered by sqlite
 
-- The InMemDB module is a module that I wrote using a combination of SQLalchemy and pandas to easily create GUI-less in memory SQLite relational databases
-- Returns a pandas DataFrame and can use all associated methods
-- Can create, update, delete and query tables
+## What it is?
+
+InMemDB is a Python package that combines sqlalchemy and pandas to easily create GUI-less in memory sqlite relational databases
+
+## Main Features
+
+Here are a few things that InMemDB does well:
+
+- Create relational databases in RAM, offering quick speed
+- Returns a pandas DataFrame allowing for the use all associated panda methods
+- Offers C.R.U.D functionality
 - Tables can be created from pandas DataFrames, lists, and dictionaries
