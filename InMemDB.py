@@ -21,7 +21,7 @@ class InMemDB():
     def __init__(self):
         self._conn = create_engine('sqlite://')
 
-    def CreateTableFromDF(self, table_name: str, df: pd.DataFrame, index: bool = False) -> None:
+    def createTableFromDF(self, table_name: str, df: pd.DataFrame, index: bool = False) -> None:
         '''
         Creates a new table in the current database from a pandas.DataFrame object.
 
@@ -45,7 +45,7 @@ class InMemDB():
             raise AttributeError(
                 'the df parameter must be a pandas.DataFrame object.')
 
-    def CreateTableSeq(self, table_name: str, iterable, columns=None, index=None) -> None:
+    def createTableSeq(self, table_name: str, iterable, columns=None, index=None) -> None:
         '''
         Creates a new table in the current database from a python iterable object.
 
@@ -76,7 +76,7 @@ class InMemDB():
             raise AttributeError(
                 'The iterable parameter must be a dict object.')
 
-    def DropTable(self, table_name: str) -> None:
+    def dropTable(self, table_name: str) -> None:
         '''
         Drops the table from the current database if it exists.
 
@@ -109,7 +109,7 @@ class InMemDB():
             raise AttributeError(
                 'The query parameter must be a string literal.')
 
-    def TableNames(self):
+    def tableNames(self):
         '''
         Lists the current table names in the database.
         '''
