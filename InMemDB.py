@@ -8,7 +8,12 @@ class _Error(Exception):
 
 
 class _DuplicateTableNameError(_Error):
-    """Raised when the name of a table already exsists within current connection."""
+    """Raised when the name of a table already exists within current connection."""
+    pass
+
+
+class _TableNameDoesNotExist(_Error):
+    """Raised when the table does not exist within current connection."""
     pass
 
 
@@ -19,15 +24,18 @@ class InMemDB():
     '''
 
     def __init__(self):
+        '''
+        Initalize a sqlite database.
+        '''
         self._conn = create_engine('sqlite://')
 
-    def createTableFromDF(self, table_name: str, df: pd.DataFrame, index: bool = False) -> None:
+    def createTableFromDF(self, tableName: str, df: pd.DataFrame, index: bool = False) -> None:
         '''
         Creates a new table in the current database from a pandas.DataFrame object.
 
         Parameters
         ----------     
-        table_name: The table name of the newly created table. If the table name already exists
+        tableName: The table name of the newly created table. If the table name already exists
             within the database an error is raised.
 
         df: A pandas.DataFrame object that is used to construct table attributes and tuples.
@@ -35,23 +43,23 @@ class InMemDB():
         index: Set to False, if set to True the index will become an attribute of the new table.
         '''
 
-        if self._conn.has_table(table_name):
-            errorMsg = _errorMsg(table_name=table_name)
+        if self._conn.has_table(tableName):
+            errorMsg = _errorMsg(tableName=tableName)
             raise _DuplicateTableNameError(errorMsg)
         try:
-            df.to_sql(table_name, self._conn, index=index)
-            return '{} table has been created successfully'.format(table_name)
+            df.to_sql(tableName, self._conn, index=index)
+            return '{} table has been created successfully'.format(tableName)
         except AttributeError:
             raise AttributeError(
                 'the df parameter must be a pandas.DataFrame object.')
 
-    def createTableSeq(self, table_name: str, iterable, columns=None, index=None) -> None:
+    def createTableSeq(self, tableName: str, iterable, columns=None, index=None) -> None:
         '''
         Creates a new table in the current database from a python iterable object.
 
         Parameters
         ----------     
-        table_name: The table name of the newly created table. If the table name already exists
+        tableName: The table name of the newly created table. If the table name already exists
             within the database an error is raised.
 
         iterable: python Iterable object.
@@ -65,34 +73,36 @@ class InMemDB():
             np.arange(n) if no column labels are provided.    
         '''
 
-        if self._conn.has_table(table_name):
-            errorMsg = _errorMsg(table_name=table_name)
+        if self._conn.has_table(tableName):
+            errorMsg = _errorMsg(tableName=tableName)
             raise _DuplicateTableNameError(errorMsg)
         try:
             df = pd.DataFrame(iterable, columns=columns, index=index)
-            df.to_sql(table_name, self._conn, index=False)
-            return '{} table has been created successfully'.format(table_name)
+            df.to_sql(tableName, self._conn, index=False)
+            return '{} table has been created successfully'.format(tableName)
         except ValueError:
             raise AttributeError(
                 'The iterable parameter must be a dict object.')
 
-    def dropTable(self, table_name: str) -> None:
+    def dropTable(self, tableName: str) -> None:
         '''
         Drops the table from the current database if it exists.
 
         Parameters
         ----------     
-        table_name: The table name of the table you want to drop. If the table name does not exist
+        tableName: The table name of the table you want to drop. If the table name does not exist
             within the database an error is raised.
         '''
 
-        if self._conn.has_table(table_name) == False:
-            return '%s is not a table in the current database.' % (table_name)
+        if self._conn.has_table(tableName) == False:
+            raise _TableNameDoesNotExist(
+                '%s is not a table in the current database.' % (tableName))
+
         try:
-            pd.read_sql_query(f'DROP TABLE {table_name}', self._conn)
+            pd.read_sql_query(f'DROP TABLE {tableName}', self._conn)
         except:
             pass
-        return f'{table_name} has been deleted'
+        return f'{tableName} has been deleted'
 
     def query(self, query: str) -> pd.DataFrame:
         '''
@@ -113,9 +123,9 @@ class InMemDB():
         '''
         Lists the current table names in the database.
         '''
-        return self._conn.table_names()
+        return self._conn.tableNames()
 
 
-def _errorMsg(table_name: str) -> str:
-    errorMsg = f'{table_name} is already an existing table name in the database.'
+def _errorMsg(tableName: str) -> str:
+    errorMsg = f'{tableName} is already an existing table name in the database.'
     return errorMsg
